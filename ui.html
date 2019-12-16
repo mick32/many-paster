@@ -1,0 +1,210 @@
+<style>
+  body {
+    margin: 16px;
+  }
+
+  .container {
+    display: flex;
+    font: normal 500 11px/13px Inter,Roboto,sans-serif;
+  }
+
+  .flex-center {
+    display: flex;
+    align-items: center;
+  }
+
+  .section {
+    width: 50%;
+  }
+
+  .section:first-of-type {
+    margin-right: 16px;
+  }
+
+  .settings-section {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between;
+    padding-top: 8px;
+  }
+
+  .textarea {
+    font: normal 500 11px/16px Inter,Roboto,sans-serif;
+    width: 100%; height: 100%;
+    resize: none;
+    padding: 8px 12px;
+  }
+
+  .description {
+    color: #B2B2B2;
+    margin: 0 5px;
+    margin-left: 20px;
+  }
+
+  .feature-section {
+    margin-bottom: 24px;
+  }
+
+  .button-section {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .button {
+    width: auto;
+    font-size: 11px;
+    height: 30px;
+    line-height: 0;
+    border-radius: 6px; 
+    border: none; 
+    color: #fff;
+    outline: none;
+    padding: 10px 13px;
+    background: #18A0FB;
+  }
+
+  .checkbox {
+    margin: 0;
+    margin-right: 5px;
+  }
+
+  input, textarea {
+    outline:none;
+    border-radius: 4px;
+    border: 1px solid #E5E5E5;
+  }
+
+  input:focus, textarea:focus {
+    border: 1px solid #18A0FB;
+  }
+
+  .copy-button {
+    background: #fff;
+    color: #000;
+    border: 1px solid black;
+  }
+</style>
+
+<div class='container'>
+    <div style="width: 50%;" class='section'>
+       <textarea id="text" class='textarea' value="" placeholder="Enter your data to paste..."></textarea>
+    </div>
+    <div class='section settings-section'>
+       <div>
+          <div class='feature-section'>
+             <p class="flex-center" style="margin: 0; margin-bottom: 8px;">
+                <input class="checkbox" type="checkbox" name="" id="loop-data" placeholder="$:@^&;" />Loop data pasting
+             </p>
+             <div class='description'>
+                If enabled, data will be inserted cyclically. If disabled, the extra fields will remain unchanged.
+             </div>
+          </div>
+          <div class='feature-section'>
+             <p class="flex-center" style="margin: 0; margin-bottom: 8px;">
+                <input class="checkbox" type="checkbox" name="" id="replace"/>Ignore sybols to paste
+             </p>
+             <div class="description" style="margin-bottom: 8px;">Enter characters to ignore when pasting.</div>
+             <input style="padding: 5px 10px; margin-left: 20px;" type="text" name="" id="replace-symbol"
+                placeholder="$:@^&;" />
+          </div>
+          <p class="flex-center" style="margin: 0;">
+             <input class="checkbox" type="checkbox" name="" id="reverse" />Reverse pasting
+          </p>
+       </div>
+       <div class="button-section">
+          <button id="copy" class="button copy-button" onclick="copy()">
+          Copy from selection
+          </button>
+          <button id="paste" class="button" onclick="paste()">
+          Paste data
+          </button>
+       </div>
+    </div>
+ </div>
+
+<script>
+  onmessage = event => {
+    let message = event.data.pluginMessage;
+    if (message.type === 'userSettings') {
+      updateFullUI(message.settings)
+    }
+
+    if (message.type === 'selectedText') {
+      updateTextBox(message.selectedItems)
+    }
+  }
+
+  function updateTextBox(text) {
+    if (!text) {
+      return;
+    }
+
+    document.getElementById("text").value = text.join('\n');
+  }
+
+
+  function updateFullUI(data) {
+    if (!data) {
+      return;
+    }
+
+    const { loopData, text, replace, replaceSymbols, reverse } = data;
+
+    document.getElementById("loop-data").checked = loopData;
+    document.getElementById("reverse").checked = reverse;
+    document.getElementById("text").value = text;
+    document.getElementById("replace").checked = replace;
+    document.getElementById("replace-symbol").value = replaceSymbols;
+  }
+
+  window.onload = () => {
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: "getUserSettings",
+        }
+      },
+      "*"
+    );
+  }
+
+  function copy() {
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: "getSelectedText",
+        }
+      },
+      "*"
+    );
+  }
+
+  function paste() {
+    const textbox = document.getElementById("text");
+    const insertedText = textbox.value;
+    const replace = document.getElementById("replace").checked;
+    const replaceSymbols = document.getElementById("replace-symbol").value;
+    const loopData = document.getElementById("loop-data").checked;
+    const reverse = document.getElementById("reverse").checked;
+
+    if (!insertedText) {
+      alert("Paste data is empty");
+
+      return;
+    }
+
+    const text = parent.postMessage(
+      {
+        pluginMessage: {
+          type: "replace-text",
+          text: insertedText,
+          replace,
+          replaceSymbols,
+          loopData,
+          reverse
+        }
+      },
+      "*"
+    );
+  }
+</script>
