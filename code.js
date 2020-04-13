@@ -14,11 +14,11 @@ const getUserData = async () => {
   return await figma.clientStorage.getAsync('user-settings');
 };
 
-const saveUserData = async data => {
+const saveUserData = async (data) => {
   await figma.clientStorage.setAsync('user-settings', data);
 };
 
-figma.ui.onmessage = async msg => {
+figma.ui.onmessage = async (msg) => {
   const { replace, replaceSymbols, type, text, loopData, reverse } = msg;
 
   if (type === 'getUserSettings') {
@@ -30,14 +30,14 @@ figma.ui.onmessage = async msg => {
 
   if (type === 'getSelectedText') {
     const selectedItems = figma.currentPage.selection
-      .filter(node => node.type === 'TEXT')
+      .filter((node) => node.type === 'TEXT')
       .sort((a, b) => {
         const aNode = a.absoluteTransform[0][2] + a.absoluteTransform[1][2];
         const bNode = b.absoluteTransform[0][2] + b.absoluteTransform[1][2];
 
         return aNode - bNode;
       })
-      .map(node => node.characters);
+      .map((node) => node.characters);
 
     return figma.ui.postMessage({ type: 'selectedText', selectedItems });
   }
@@ -53,7 +53,7 @@ figma.ui.onmessage = async msg => {
   if (replace) {
     const prepareRgx = replaceSymbols
       .split('')
-      .map(item => `\\${item}|`)
+      .map((item) => `\\${item}|`)
       .join('')
       .replace(/\|$/, '');
     regExp = new RegExp(`${prepareRgx}`, 'g');
@@ -63,7 +63,7 @@ figma.ui.onmessage = async msg => {
     await saveUserData({ text, loopData, replaceSymbols, reverse, replace });
 
     const selectedItems = figma.currentPage.selection
-      .filter(node => node.type === 'TEXT')
+      .filter((node) => node.type === 'TEXT')
       .sort((a, b) => {
         const aNode = a.absoluteTransform[0][2] + a.absoluteTransform[1][2];
         const bNode = b.absoluteTransform[0][2] + b.absoluteTransform[1][2];
@@ -71,7 +71,7 @@ figma.ui.onmessage = async msg => {
         return aNode - bNode;
       });
 
-    let splitText = text.split(/\r\n|\n|\t/g).filter(text => text.trim() !== '');
+    let splitText = text.split(/\r\n|\n|\t/g).filter((text) => text.trim() !== '');
 
     if (reverse) {
       splitText.reverse();
@@ -93,6 +93,4 @@ figma.ui.onmessage = async msg => {
       selectedItems[i].characters = splitText[i].replace(regExp, '');
     }
   }
-
-  figma.closePlugin();
 };
