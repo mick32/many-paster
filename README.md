@@ -17,6 +17,7 @@ Many Paster позволяет вставлять перечень данных 
 
 - Зациклить вставку, если слоев больше, чем данных которые вы имеете
 - Игнорируй символы, если это необходимо
+- Вставка в обратном порядке
 
 ## [ENG] 
 Many Paster allows you to insert a list of data into selected text layers individually.
@@ -33,3 +34,4 @@ This may be useful for tables or data of the same category.
 
 - Loop the insert if there are more layers than
 - Ignore characters if necessary
+- Reverse insert text layers.
