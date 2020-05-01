@@ -31,3 +31,5 @@ This may be useful for tables or data of the same category.
 
 - Loop the insert if there are more layers than
 - Ignore characters if necessary
+
+![many-paster](https://user-images.githubusercontent.com/28981393/80793990-5af19a00-8ba1-11ea-9c41-0c72f1101b70.png)
