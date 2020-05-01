@@ -506,11 +506,16 @@ interface PageNode extends BaseNodeMixin, ChildrenMixin, ExportMixin {
 interface FrameNode extends DefaultContainerMixin {
   readonly type: "FRAME" | "GROUP"
   clone(): FrameNode
+
+  characters: string
+  fontName: FontName
 }
 
 interface SliceNode extends BaseNodeMixin, SceneNodeMixin, LayoutMixin, ExportMixin {
   readonly type: "SLICE"
   clone(): SliceNode
+  characters: string
+  fontName: FontName
 }
 
 interface RectangleNode extends DefaultShapeMixin, ConstraintMixin, CornerMixin {
@@ -520,23 +525,35 @@ interface RectangleNode extends DefaultShapeMixin, ConstraintMixin, CornerMixin 
   topRightRadius: number
   bottomLeftRadius: number
   bottomRightRadius: number
+
+  characters: string
+  fontName: FontName
 }
 
 interface LineNode extends DefaultShapeMixin, ConstraintMixin {
   readonly type: "LINE"
   clone(): LineNode
+
+  characters: string
+  fontName: FontName
 }
 
 interface EllipseNode extends DefaultShapeMixin, ConstraintMixin, CornerMixin {
   readonly type: "ELLIPSE"
   clone(): EllipseNode
   arcData: ArcData
+
+  characters: string
+  fontName: FontName
 }
 
 interface PolygonNode extends DefaultShapeMixin, ConstraintMixin, CornerMixin {
   readonly type: "POLYGON"
   clone(): PolygonNode
   pointCount: number
+
+  characters: string
+  fontName: FontName
 }
 
 interface StarNode extends DefaultShapeMixin, ConstraintMixin, CornerMixin {
@@ -544,6 +561,9 @@ interface StarNode extends DefaultShapeMixin, ConstraintMixin, CornerMixin {
   clone(): StarNode
   pointCount: number
   innerRadius: number
+
+  characters: string
+  fontName: FontName
 }
 
 interface VectorNode extends DefaultShapeMixin, ConstraintMixin, CornerMixin {
@@ -552,6 +572,9 @@ interface VectorNode extends DefaultShapeMixin, ConstraintMixin, CornerMixin {
   vectorNetwork: VectorNetwork
   vectorPaths: VectorPaths
   handleMirroring: HandleMirroring | symbol
+
+  characters: string
+  fontName: FontName
 }
 
 interface TextNode extends DefaultShapeMixin, ConstraintMixin {
@@ -568,7 +591,7 @@ interface TextNode extends DefaultShapeMixin, ConstraintMixin {
 
   textStyleId: string | symbol
   fontSize: number | symbol
-  fontName: FontName | symbol
+  fontName: FontName
   textCase: TextCase | symbol
   textDecoration: TextDecoration | symbol
   letterSpacing: LetterSpacing | symbol
@@ -602,18 +625,27 @@ interface ComponentNode extends DefaultContainerMixin {
   description: string
   readonly remote: boolean
   readonly key: string // The key to use with "importComponentByKeyAsync"
+
+  characters: string
+  fontName: FontName
 }
 
 interface InstanceNode extends DefaultContainerMixin  {
   readonly type: "INSTANCE"
   clone(): InstanceNode
   masterComponent: ComponentNode
+
+  characters: string
+  fontName: FontName
 }
 
 interface BooleanOperationNode extends DefaultShapeMixin, ChildrenMixin, CornerMixin {
   readonly type: "BOOLEAN_OPERATION"
   clone(): BooleanOperationNode
   booleanOperation: "UNION" | "INTERSECT" | "SUBTRACT" | "EXCLUDE"
+
+  characters: string
+  fontName: FontName
 }
 
 type BaseNode =

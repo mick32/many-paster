@@ -1,4 +1,22 @@
 <style>
+  * { -webkit-box-sizing: border-box; box-sizing: border-box; }
+  
+  .label { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; height: 32px; padding: 8px 4px 8px 8px; cursor: default; color: rgba(0, 0, 0, 0.3); background-color: #ffffff; font-family: "Inter", sans-serif; font-weight: 400; font-size: 11px; line-height: 16px; letter-spacing: 0.005em; }
+  
+  .checkbox { font-family: "Roboto", sans-serif; font-weight: normal; font-size: 11px; line-height: 16px; letter-spacing: 0.005em; position: relative; display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; -webkit-box-orient: horizontal; -webkit-box-direction: normal; -ms-flex-direction: row; flex-direction: row; cursor: default; }
+  
+  .checkbox__box { display: none; }
+  
+  .checkbox__box:checked + label:before { border: 1px solid #18a0fb; background-color: #18a0fb; background-image: url("data:image/svg+xml;utf8,%3Csvg%20fill%3D%22none%22%20height%3D%227%22%20viewBox%3D%220%200%208%207%22%20width%3D%228%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20clip-rule%3D%22evenodd%22%20d%3D%22m1.17647%201.88236%201.88235%201.88236%203.76471-3.76472%201.17647%201.17648-4.94118%204.9412-3.05882-3.05884z%22%20fill%3D%22%23fff%22%20fill-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: 1px 2px; }
+  
+  .checkbox__box:disabled + label { opacity: 0.3; }
+  
+  .checkbox__box:checked:disabled + label:before { border: 1px solid rgba(0, 0, 0, 0.8); background-color: rgba(0, 0, 0, 0.8); }
+  
+  .checkbox__label { display: -webkit-box; display: -ms-flexbox; display: flex; width: 100%; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+  
+  .checkbox__label:before { display: block; width: 10px; height: 10px; margin: 2px 8px 0 0; content: ''; border: 1px solid rgba(0, 0, 0, 0.8); border-radius: 2px; }
+  
   body {
     margin: 16px;
   }
@@ -52,7 +70,8 @@
   }
 
   .button {
-    width: auto;
+    display: flex;
+    flex-grow: 1;
     font-size: 11px;
     height: 30px;
     line-height: 0;
@@ -80,62 +99,117 @@
   }
 
   .copy-button {
+    margin-right: 4px;
     background: #fff;
     color: #000;
     border: 1px solid black;
   }
-</style>
 
-<div class='container'>
-    <div style="width: 50%;" class='section'>
-       <textarea id="text" class='textarea' value="" placeholder="Enter your data to paste..."></textarea>
-    </div>
-    <div class='section settings-section'>
-       <div>
-          <div class='feature-section'>
-             <p class="flex-center" style="margin: 0; margin-bottom: 8px;">
-                <input class="checkbox" type="checkbox" name="" id="loop-data" placeholder="$:@^&;" />Loop data pasting
-             </p>
-             <div class='description'>
-                If enabled, data will be inserted cyclically. If disabled, the extra fields will remain unchanged.
-             </div>
+  .mb-8 {
+    margin-bottom: 8px;
+  }
+
+  .menu {
+    position: absolute;
+    bottom: 1px;
+    left: 2px;
+
+    display: flex;
+    justify-content: flex-end;
+
+    width: calc(100% - 4px);
+    height: 40px;
+    padding: 0 12px;
+    background: #fff;
+  }
+
+  .remove-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 100%;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
+  </style>
+  
+  <div class='container'>
+      <div style="width: 50%; position: relative;" class='section'>
+         <textarea id="text" class='textarea' value="" placeholder="Enter your data to paste..."></textarea>
+         <div class="menu">
+           <div class="remove-text" id="clean" onclick="clean()">Clean</div>
           </div>
-          <div class='feature-section'>
-             <p class="flex-center" style="margin: 0; margin-bottom: 8px;">
-                <input class="checkbox" type="checkbox" name="" id="replace"/>Ignore sybols to paste
-             </p>
-             <div class="description" style="margin-bottom: 8px;">Enter characters to ignore when pasting.</div>
-             <input style="padding: 5px 10px; margin-left: 20px;" type="text" name="" id="replace-symbol"
-                placeholder="$:@^&;" />
-          </div>
-          <p class="flex-center" style="margin: 0;">
-             <input class="checkbox" type="checkbox" name="" id="reverse" />Reverse pasting
-          </p>
-       </div>
-       <div class="button-section">
-          <button id="copy" class="button copy-button" onclick="copy()">
-          Copy from selection
-          </button>
-          <button id="paste" class="button" onclick="paste()">
-          Paste data
-          </button>
-       </div>
-    </div>
- </div>
+      </div>
+      <div class='section settings-section'>
+         <div>
+            <div class='feature-section'>
+              <div class="checkbox mb-8">
+                <input class="checkbox__box" type="checkbox" id="loop-data">
+                <label class="checkbox__label" for="loop-data">Loop data pasting</label>
+              </div>
+               <div class='description'>
+                  If enabled, data will be inserted cyclically. If disabled, the extra fields will remain unchanged.
+               </div>
+            </div>
+            <div class='feature-section'>
+               <div class="checkbox mb-8">
+                  <input class="checkbox__box" type="checkbox" id="replace">
+                  <label class="checkbox__label" for="replace">Ignore sybols to paste</label>
+                </div>
+               <div class="description" style="margin-bottom: 8px;">Enter characters to ignore when pasting.</div>
+               <input style="padding: 5px 10px; margin-left: 20px;" type="text" name="" id="replace-symbol"
+                  placeholder="$:@^&;" />
+            </div>
+            <div class="checkbox">
+              <input class="checkbox__box" type="checkbox" id="reverse">
+              <label class="checkbox__label" for="reverse">Reverse pasting</label>
+            </div>
+         </div>
+         <div class="button-section">
+            <button id="copy" class="button copy-button" onclick="copy()">
+            Copy from selection
+            </button>
+            <button id="paste" class="button" onclick="paste()">
+            Paste data
+            </button>
+         </div>
+      </div>
+   </div>
 
 <script>
+  const eventTypes = {
+    USER_SETTINGS: 'user-settings',
+    GET_USER_SETTINGS: 'get-user-settings',
+    GET_SELECTED_TEXT: 'get-selected-Text',
+    REPLACE_TEXT: 'replace-text',
+    POST_SELECTED_TEXT: 'selected-text',
+    POST_USER_SETTINGS: 'post-user-settings'
+  }
+  
+  window.onload = () => {
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: eventTypes.GET_USER_SETTINGS,
+        }
+      },
+      "*"
+    );
+  }
+
   onmessage = event => {
     let message = event.data.pluginMessage;
-    if (message.type === 'userSettings') {
-      updateFullUI(message.settings)
+    if (message.type === eventTypes.POST_USER_SETTINGS) {
+      render(message.settings)
     }
 
-    if (message.type === 'selectedText') {
+    if (message.type === eventTypes.POST_SELECTED_TEXT) {
       updateTextBox(message.selectedItems)
     }
   }
 
-  function updateTextBox(text) {
+  const updateTextBox = (text) => {
     if (!text) {
       return;
     }
@@ -144,7 +218,7 @@
   }
 
 
-  function updateFullUI(data) {
+  const render = (data) => {
     if (!data) {
       return;
     }
@@ -158,29 +232,23 @@
     document.getElementById("replace-symbol").value = replaceSymbols;
   }
 
-  window.onload = () => {
+  const copy = () => {
     parent.postMessage(
       {
         pluginMessage: {
-          type: "getUserSettings",
+          type: eventTypes.GET_SELECTED_TEXT,
         }
       },
       "*"
     );
   }
 
-  function copy() {
-    parent.postMessage(
-      {
-        pluginMessage: {
-          type: "getSelectedText",
-        }
-      },
-      "*"
-    );
+  const clean = () => {
+    const textbox = document.getElementById("text");
+    textbox.value = '';
   }
 
-  function paste() {
+  const paste = () => {
     const textbox = document.getElementById("text");
     const insertedText = textbox.value;
     const replace = document.getElementById("replace").checked;
@@ -194,10 +262,10 @@
       return;
     }
 
-    const text = parent.postMessage(
+    parent.postMessage(
       {
         pluginMessage: {
-          type: "replace-text",
+          type: eventTypes.REPLACE_TEXT,
           text: insertedText,
           replace,
           replaceSymbols,
